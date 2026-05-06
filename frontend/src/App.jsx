@@ -71,7 +71,7 @@ const App = () => {
       <ContactProvider>
         <Router>
           <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
-            {/* The NavBar will automatically show/hide based on AuthContext internally */}
+      
             <AuthNavBarWrapper />
             <main className="container mx-auto px-4 py-8">
               <AnimatedRoutes />
@@ -85,7 +85,7 @@ const App = () => {
 
 const AuthNavBarWrapper = () => {
   const { user, logout } = useAuth();
-  return user ? <NavBar user={user} logout={logout} /> : null;
+  return user ? <Navbar user={user} logout={logout} /> : null;
 };
 
 export default App;
