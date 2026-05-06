@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import {Phone, Mail, Trash2, Edit2, Star} from 'lucide-react';
 
 const ContactCard = ({ contact, onDelete, onEdit }) => {
+    const type = contact.type?.toLowercase();
+
     return (
         <motion.div
             layout
@@ -12,7 +14,7 @@ const ContactCard = ({ contact, onDelete, onEdit }) => {
             className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow relative overflow-hidden">
 
             <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 bg-indigo-900 text-indigo-600 rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="w-12 h-12 bg-indigo-900 text-white rounded-full flex items-center justify-center font-bold text-xl">
                     {contact.name.charAt(0)}
                 </div>
                 <div className="flex gap-1">
