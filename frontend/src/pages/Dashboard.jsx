@@ -13,6 +13,7 @@ const Dashboard = () => {
     const [filtered, setFiltered] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [currentContact, setCurrentContact] = useState(null);
+    const [pageReady, setPageReady] = useState(false);
 
     const getAuthConfig = () => {
         const token = localStorage.getItem('token');
@@ -38,6 +39,7 @@ const fetchContacts =async () => {
         console.error('Fetch Failed', error);
     } finally{
         setLoading(false);
+        setPageReady(true);
     }
 };
 
