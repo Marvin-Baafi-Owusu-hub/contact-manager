@@ -17,6 +17,11 @@ const contactSchema = mongoose.Schema({
     phone: {
         type: String,
         required: [true, "Please add the phone number"]
+    },
+    type: {
+        type: String,
+        enum: ["personal", "professional"],
+        default: "personal", 
     }
 }, 
 {
