@@ -8,7 +8,7 @@ import { ContactProvider } from './context/ContactContext';
 // Hooks
 import useAuth from './hooks/useAuth';
 // Components
-import NavBar from './components/NavBar';
+import Navbar from './components/Navbar';
 // Pages
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
