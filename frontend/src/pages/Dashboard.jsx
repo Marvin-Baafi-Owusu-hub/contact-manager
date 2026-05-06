@@ -32,7 +32,7 @@ const Dashboard = () => {
 const fetchContacts =async () => {
     setLoading(true);
     try{
-        const res = await axios.get('http://localhost:5001/api/contacts', getAuthConfig());
+        const res = await axios.get('https://contact-manager-backend-x2tn.onrender.com/api/contacts', getAuthConfig());
         setContacts(res.data);
         setFiltered(res.data);
     }catch(error){
@@ -57,7 +57,7 @@ const handleSearch = (query) => {
 const handleDelete = async(id) => {
     if(window.confirm("Delete this contacts?")) {
         try{
-            await axios.delete(`http://localhost:5001/api/contacts/${id}`, getAuthConfig());
+            await axios.delete(`https://contact-manager-backend-x2tn.onrender.com/api/contacts/${id}`, getAuthConfig());
             fetchContacts();
         } catch(err){
             alert("Failed to delete contacts");
@@ -69,9 +69,9 @@ const handleSaveContact = async (formData) => {
     try{
         const config = getAuthConfig();
         if (currentContact && currentContact._id) {
-            await axios.put(`http://localhost:5001/api/contacts/${currentContact._id}`, formData, config);
+            await axios.put(`https://contact-manager-backend-x2tn.onrender.com/api/contacts/${currentContact._id}`, formData, config);
         } else {
-            await axios.post('http://localhost:5001/api/contacts', formData, config);
+            await axios.post('https://contact-manager-backend-x2tn.onrender.com/api/contacts', formData, config);
         }
         setShowForm(false);
         setCurrentContact(null);

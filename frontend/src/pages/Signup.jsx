@@ -11,7 +11,7 @@ const Signup = () => {
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        await axios.post('http://localhost:5001/api/users/register', formData);
+        await axios.post('https://contact-manager-backend-x2tn.onrender.com/api/users/register', formData);
         alert("Account created!");
         navigate('/signin');
     } catch (err) {

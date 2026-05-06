@@ -30,7 +30,7 @@ export const AuthProvider = ({children}) => {
             try{
                 // assuming we have api/auth/me an endpoint to get user info based on token 
                 const config = {headers : { Authorization:`Bearer  ${token}`}}
-                const res = await axios.get('http://localhost:5001/api/users/current', config);
+                const res = await axios.get('https://contact-manager-backend-x2tn.onrender.com/api/users/current', config);
                 setUser(res.data);
             } catch (error) {
                 setToken(null);
@@ -43,10 +43,10 @@ export const AuthProvider = ({children}) => {
     }, [token]);
 
     const login = async (email, password) => {
-        const res = await axios.post('http://localhost:5001/api/users/login', {email, password});
+        const res = await axios.post('https://contact-manager-backend-x2tn.onrender.com/api/users/login', {email, password});
         const {accessToken} = res.data;
         setToken(accessToken);
-        const userRes = await axios.get('http://localhost:5001/api/users/current', {
+        const userRes = await axios.get('https://contact-manager-backend-x2tn.onrender.com/api/users/current', {
             headers: {Authorization: `Bearer ${accessToken}` }
         });
         setUser(userRes.data);
