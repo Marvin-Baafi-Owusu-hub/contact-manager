@@ -26,7 +26,7 @@ const ContactForm = ({ contact, onClose, onSave }) => {
                 {/*LEFT SIDE: IMAGE AREA*/}
                 <div className="w-1/3 bg-indigo-50 flex flex-col items-center justify-center p-6 border-r border-gray-100">
                     <img 
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ66NWrO260pTzahTokuKiDR5PjBMLP2626A&s" 
+                        src="https://plus.unsplash.com/premium_photo-1684761949431-53b58936cf2c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGNvbnRhY3QlMjBmb3JtfGVufDB8fDB8fHww" 
                         alt="Contact"
                         className="h-full rounded-xl object-cover shadow-lg mb-4"
                     />
