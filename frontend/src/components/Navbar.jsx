@@ -11,7 +11,7 @@ const handleLogout = () => {
     };
 
 return (
-    <nav className="flex justify-between items-center p-4 bg-white/90 backdrop-blur-md border-b sticky top-0 z-50">
+    <nav className="flex justify-between items-center p-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
         <motion.div
         whileHover={{ x: 5 }}
         className="flex items-center gap-2 font-bold text-xl text-indigo-950 cursor-pointer"
