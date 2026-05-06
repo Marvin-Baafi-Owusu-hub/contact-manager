@@ -16,7 +16,7 @@ const getContacts = useCallback(async () => {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-            'http://localhost:5001/api/contacts',
+            'https://contact-manager-backend-x2tn.onrender.com/api/contacts',
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -36,7 +36,7 @@ const getContacts = useCallback(async () => {
     // ADD contacts
     const addContact = async(contact) => {
         try {
-            const res = await axios.post('http://localhost:5001/api/contacts', contact);
+            const res = await axios.post('https://contact-manager-backend-x2tn.onrender.com/api/contacts', contact);
             setContacts([res.data, ...contacts]);
         } catch(err) {
             setError(err.response?.data?.msg || 'Error adding contact')
@@ -46,7 +46,7 @@ const getContacts = useCallback(async () => {
     // UPDATE contacts
     const updateContact = async (id, updatedData) => {
         try{
-        const res = await axios.put(`http://localhost:5001/api/contacts/${id}`, updatedData);
+        const res = await axios.put(`https://contact-manager-backend-x2tn.onrender.com/api/contacts/${id}`, updatedData);
         setContacts(contacts.map(c => (c._id === id ? res.data : c)));
         } catch(err){
             setError(err.response?.data?.msg || 'Error updating contact');
@@ -55,7 +55,7 @@ const getContacts = useCallback(async () => {
 
     //DELETE contact
     const deleteContact = async(id) => {
-        const res = await axios.delete(`http://localhost:5001/api/contacts/${id}`);
+        const res = await axios.delete(`https://contact-manager-backend-x2tn.onrender.com/api/contacts/${id}`);
         setContacts(contacts.filtered(c => c._id !== id));
     }
 
