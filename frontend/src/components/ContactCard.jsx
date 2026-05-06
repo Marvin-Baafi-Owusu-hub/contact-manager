@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import {Phone, Mail, Trash2, Edit2, Star} from 'lucide-react';
 
 const ContactCard = ({ contact, onDelete, onEdit }) => {
-    const type = contact.type?.toLowercase();
+    const type = contact.type?.toLowerCase();
 
     return (
         <motion.div
