@@ -15,7 +15,7 @@ const ContactCard = ({ contact, onDelete, onEdit }) => {
 
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 bg-indigo-950 text-white rounded-full flex items-center font-bold text-lg shrink-0">
+                    <div className="w-11 h-11 bg-indigo-950 text-white rounded-full texts-center flex  font-bold text-lg shrink-0">
                         {contact.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">

@@ -11,7 +11,16 @@ const ContactForm = ({ contact, onClose, onSave }) => {
     });
 
     useEffect(() => {
-        if (contact) setFormData(contact);
+        if(contact && contact._id) {
+            setFormData({
+                name: contact.name || '',
+                email: contact.email || '',
+                phone: contact.phone || '',
+                type: contact.type || 'personal'
+            }); 
+        }else{
+            setFormData({name:'', email:'', phone:'', type:'personal'});
+        }
     }, [contact]);
 
     const update = (field, value) => setFormData(prev => ({...prev, [field]: value}));
@@ -55,7 +64,7 @@ const ContactForm = ({ contact, onClose, onSave }) => {
                     <form onSubmit={(e) => {e.preventDefault(); onSave(formData); }} className="space-y-4">
 
                         <div className="space-y-l">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-2">
                                 <User size={11}/> Full Name
                             </label>
                             <input 
@@ -67,7 +76,7 @@ const ContactForm = ({ contact, onClose, onSave }) => {
                         </div>
 
                         <div className="space-y-l">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-l">
+                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-2">
                                 <Mail size={11}/>Email Address
                             </label>
                             <input 
@@ -79,14 +88,14 @@ const ContactForm = ({ contact, onClose, onSave }) => {
                         </div>
 
                         <div className="space-y-l">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-l">
+                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-2">
                                 <Phone size={11} /> Phone Number
                             </label>
                             <input 
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-indigo-950 focus:border-transparent outline-none transition-all text-sm"
                             placeholder="+233"
                             type="tel"
-                            value={formaData.phone}
+                            value={formData.phone}
                             onChange={(e) => update('phone', e.target.value)}
                             required />
                         </div>
@@ -100,7 +109,7 @@ const ContactForm = ({ contact, onClose, onSave }) => {
                                     className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${
                                         formData.type === t ? t === 'personal' ? 'border-green-300 bg-green-50 text-green-700'
                                         : 'border-purple-300 bg-purple-50 text-purple-400'
-                                        : 'border-gray-200 bg-gray-500 text-gray-500 hover:border-gray-300'
+                                        : 'border-gray-200 bg-gray-500/30 text-gray-500 hover:border-gray-300'
                                         }`}>
 
                                             <input
