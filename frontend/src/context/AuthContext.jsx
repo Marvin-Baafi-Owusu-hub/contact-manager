@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [token, setToken]     = useState(() => localStorage.getItem('token'));
 
-    // Set axios Authorization header whenever token changes
     useEffect(() => {
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -22,28 +21,31 @@ export const AuthProvider = ({ children }) => {
         }
     }, [token]);
 
-    // Load user from localStorage instantly — no API call blocking navigation
-    // Only hit the API if we have a token but no cached user
     useEffect(() => {
         const loadUser = async () => {
             if (!token) {
                 setLoading(false);
                 return;
             }
-            // Try cached user first for instant load
+            // always validate cached user has username
+            // If cache only has email (stale), bust it and re-fetch
             const cached = localStorage.getItem('user');
             if (cached) {
-                setUser(JSON.parse(cached));
-                setLoading(false);
-                return; // ← skip API call, page loads instantly
+                const parsed = JSON.parse(cached);
+                if (parsed.username) {
+                    setUser(parsed);
+                    setLoading(false);
+                    return;
+                }
+                localStorage.removeItem('user');
             }
-            // No cache — fetch from API once
+            // Fetch fresh from API
             try {
                 const res = await axios.get(`${API}/api/users/current`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUser(res.data);
-                localStorage.setItem('user', JSON.stringify(res.data)); // cache it
+                localStorage.setItem('user', JSON.stringify(res.data));
             } catch {
                 setToken(null);
                 setUser(null);
@@ -58,7 +60,7 @@ export const AuthProvider = ({ children }) => {
         const res = await axios.post(`${API}/api/users/login`, { email, password });
         const { accessToken } = res.data;
         setToken(accessToken);
-        // Fetch and cache user after login
+        // Always fetch fresh user after login — never rely on stale cache
         const userRes = await axios.get(`${API}/api/users/current`, {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
@@ -69,7 +71,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setToken(null);
         setUser(null);
-        localStorage.removeItem('user'); // clear cache on logout
+        localStorage.removeItem('user');
     };
 
     return (
