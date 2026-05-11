@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save } from 'lucide-react';
+import { X, Save, User, Mail, Phone } from 'lucide-react';
 
 const ContactForm = ({ contact, onClose, onSave }) => {
     const [formData, setFormData] = useState({ 
@@ -33,7 +33,7 @@ const ContactForm = ({ contact, onClose, onSave }) => {
                 <div className="bg-indigo-950 px-6 py-5 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-white/20  rounded-full flex items-center justify-center">
-                        <Users size={20} className="text-white"/>
+                        <User size={20} className="text-white"/>
                         </div>
                         <div>
                             <h2 className="text-white font-bold text-lg">
