@@ -1,64 +1,80 @@
-import {createContext,useState, useEffect} from 'react';
+import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
-    const [loading, setLoading] = useState(true);
+const API = 'https://contact-manager-backend-x2tn.onrender.com';
 
-    // set axios default header whenever token changes
+export const AuthProvider = ({ children }) => {
+    const [user, setUser]       = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [token, setToken]     = useState(() => localStorage.getItem('token'));
+
+    // Set axios Authorization header whenever token changes
     useEffect(() => {
-        if(token){
-            axios.defaults.headers.common['Authorization'] = Bearer `${token}`;
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             localStorage.setItem('token', token);
-        } else{
+        } else {
             delete axios.defaults.headers.common['Authorization'];
             localStorage.removeItem('token');
             localStorage.removeItem('user');
         }
     }, [token]);
 
-    // load user on start
+    // Load user from localStorage instantly — no API call blocking navigation
+    // Only hit the API if we have a token but no cached user
     useEffect(() => {
-        const loadUser = async() => {
-            if(!token){
+        const loadUser = async () => {
+            if (!token) {
                 setLoading(false);
                 return;
             }
-            try{
-                // assuming we have api/auth/me an endpoint to get user info based on token 
-                const config = {headers : { Authorization:`Bearer  ${token}`}}
-                const res = await axios.get('https://contact-manager-backend-x2tn.onrender.com/api/users/current', config);
+            // Try cached user first for instant load
+            const cached = localStorage.getItem('user');
+            if (cached) {
+                setUser(JSON.parse(cached));
+                setLoading(false);
+                return; // ← skip API call, page loads instantly
+            }
+            // No cache — fetch from API once
+            try {
+                const res = await axios.get(`${API}/api/users/current`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 setUser(res.data);
-            } catch (error) {
+                localStorage.setItem('user', JSON.stringify(res.data)); // cache it
+            } catch {
                 setToken(null);
                 setUser(null);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);   
-        }
-
+        };
         loadUser();
     }, [token]);
 
     const login = async (email, password) => {
-        const res = await axios.post('https://contact-manager-backend-x2tn.onrender.com/api/users/login', {email, password});
-        const {accessToken} = res.data;
+        const res = await axios.post(`${API}/api/users/login`, { email, password });
+        const { accessToken } = res.data;
         setToken(accessToken);
-        const userRes = await axios.get('https://contact-manager-backend-x2tn.onrender.com/api/users/current', {
-            headers: {Authorization: `Bearer ${accessToken}` }
+        // Fetch and cache user after login
+        const userRes = await axios.get(`${API}/api/users/current`, {
+            headers: { Authorization: `Bearer ${accessToken}` }
         });
         setUser(userRes.data);
-    }
-    
+        localStorage.setItem('user', JSON.stringify(userRes.data));
+    };
+
     const logout = () => {
         setToken(null);
         setUser(null);
+        localStorage.removeItem('user'); // clear cache on logout
     };
+
     return (
-        <AuthContext.Provider value={{user, token, loading, login, logout, setUser}}>
+        <AuthContext.Provider value={{ user, token, loading, login, logout, setUser }}>
             {children}
         </AuthContext.Provider>
-    )
+    );
 };
