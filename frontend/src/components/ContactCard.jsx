@@ -45,7 +45,7 @@ const ContactCard = ({ contact, onDelete, onEdit }) => {
 
             <div className="space-y-2 border-t border-gray-50 pt-3">
                 <div className="flex items-center gap-2 text-gray-500 text-sm">
-                    <phone size={14} className="text-indigo-200 shrink-0" />
+                    <Phone size={14} className="text-indigo-200 shrink-0" />
                     <span className="truncate">{contact.phone}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-500 text-sm">
