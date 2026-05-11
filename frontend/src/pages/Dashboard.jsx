@@ -6,6 +6,7 @@ import ContactCard from '../components/ContactCard';
 import ContactForm from '../components/ContactForm';
 import SearchBar from '../components/SearchBar';
 import SkeletonCard from '../components/SkeletonCard';
+import {Toast, ConfirmModal, useToast} from '../components/Toast';
 
 const API = 'https://contact-manager-backend-x2tn.onrender.com';
 
@@ -100,6 +101,9 @@ const Dashboard = () => {
     const [showForm, setShowForm] = useState(false);
     const [currentContact, setCurrentContact] = useState(null);
     const [pageReady, setPageReady] = useState(false);
+    const [confirmId, setConfirmId] = useState(null);
+
+    const {toasts, showToast, removeToast} = useToast();
 
     const getAuthConfig = () => {
         const token = localStorage.getItem('token');
@@ -132,13 +136,16 @@ const Dashboard = () => {
         );
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Delete this contact?')) return;
-        try {
-            await axios.delete(`${API}/api/contacts/${id}`, getAuthConfig());
+    const handleDelete = (id) => setConfirmId(id);
+    const confirmDelete = async () => {
+        try{
+            await axios.delete(`${API}/api/contacts/${confirmId}`, getAuthConfig());
+            setConfirmId(null);
             fetchContacts();
-        } catch {
-            alert('Failed to delete contact');
+            showToast('Contact deleted successfully', 'success');
+        } catch{
+            setConfirmId(null);
+            showToast('Failed to delete contact', 'error');
         }
     };
 
@@ -169,6 +176,8 @@ const Dashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
             className="max-w-4xl mx-auto">
+
+            <Toast toasts={toasts} removeToast={removeToast} />
 
             <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
@@ -220,8 +229,18 @@ const Dashboard = () => {
                         onClose={() => { setShowForm(false); setCurrentContact(null); }} />
                 )}
             </AnimatePresence>
+
+            {/**custom delete confirm modal */}
+            <AnimatePresence>
+                {confirmId && (
+                    <ConfirmModal 
+                    message="Are you sure you want to delete contact? This cannot be undone."
+                    onConfirm={confirmDelete}
+                    onCancel={() => setConfirmId(null)} />
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 };
 
-export default Dashboard
+export default Dashboard;

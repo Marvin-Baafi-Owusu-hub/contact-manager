@@ -4,41 +4,37 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { LogIn, Mail, Lock } from 'lucide-react';
 import useAuth from '../hooks/useAuth'; 
+import {Toast, useToast} from '../components/Toast';
 
 const Signin = () => {
-    const { setUser } = useAuth(); 
+    const { login } = useAuth(); 
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
+    const {toasts, showToast, removeToast} = useToast();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const res = await axios.post('https://contact-manager-backend-x2tn.onrender.com/api/users/login', formData);
-            
-            const token = res.data.accessToken || res.data.token;
-
-            if (token) {
-                localStorage.setItem('token', token);
-                const userData = res.data.user || { email: formData.email };
-                localStorage.setItem('user', JSON.stringify(userData));
-                
-                setUser(userData); 
-                navigate('/');
-            }
-        } catch(err) {
-            console.error("Full Error Object:", err);
-            const message = err.response?.data?.message || "Invalid Credentials or a Server Down";
-            alert(message);
+        setSubmitting(true);
+        try{
+            await login(formData.email, formData.password);
+            navigate('/');
+        } catch(err){
+            const message = err.response?.data?.message || "Invalid credentials or server error";
+            showToast(message, 'error');
+        } finally{
+            setSubmitting(false);
         }
     };
 
     return (
         <div className="max-w-md mx-auto mt-20">
+            <Toast toasts={toasts} removeToast={removeToast} />
             <motion.div 
                 initial={{ y: 20, opacity: 0 }} 
                 animate={{ y: 0, opacity: 1 }}
-                className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100"
-            >
+                className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
+            
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 bg-indigo-100 text-indigo-950 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <LogIn size={32} />
@@ -74,9 +70,9 @@ const Signin = () => {
                         whileHover={{ scale: 1.02 }} 
                         whileTap={{ scale: 0.98 }}
                         type="submit"
-                        className="w-full bg-indigo-950 text-white py-4 rounded-xl font-bold shadow-lg shadow-indigo-100"
-                    >
-                        Sign In
+                        disabled={submitting}
+                        className="w-full bg-indigo-950 text-white py-4 rounded-xl font-bold shadow-lg shadow-indigo-100 disabled:opacity-60">
+                        {submitting ? 'Signing in...' : 'Sign In'}
                     </motion.button>
                 </form>
                 

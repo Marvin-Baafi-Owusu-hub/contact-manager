@@ -3,26 +3,35 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { UserPlus, User, Mail, Lock } from 'lucide-react';
+import {Toast, useToast} from '../components/Toast';
+
+const API = 'https://contact-manager-backend-x2tn.onrender.com';
 
 const Signup = () => {
     const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
+    const {toasts, showToast, removeToast} = useToast();
+    
 
 const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-        await axios.post('https://contact-manager-backend-x2tn.onrender.com/api/users/register', formData);
-        alert("Account created!");
-        navigate('/signin');
-    } catch (err) {
-        // This will alert the ACTUAL reason the backend sent a 400
-        const serverMessage = err.response?.data?.message || "Registration failed";
-        alert(serverMessage); 
-        console.log("Server Error Data:", err.response?.data);
+    setSubmitting(true);
+    try{
+        await axios.post(`${API}/api/users/register`, formData);
+        showToast('Account created successfully! Redirecting...', 'success');
+        setTimeout(() => navigate('/signin'), 1500);
+    }catch(err){
+        const message = err.response?.data?.message || "Registration failed";
+        showToast(message, 'error');
+            console.log("Server Error Data:", err.response?.data);
+    }finally {
+        setSubmitting(false);
     }
 };
     return (
     <div className="max-w-md mx-auto mt-20">
+        <Toast toasts={toasts} removeToast={removeToast} />
         <motion.div 
         initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
         className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
@@ -62,15 +71,15 @@ const handleSubmit = async (e) => {
             
         </div>
             <motion.button 
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={submitting}
             className="w-full bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-green-100">
-        
-            Get Started
+                {submitting ? 'Creating account...' : 'Get Started'}
             </motion.button>
         </form>
         
         <p className="text-center mt-8 text-gray-600">
-            Already have an account? <Link to="/signin" className="text-green-600 font-bold hover:underline">Sign In</Link>
+            Already have an account?{' '}
+            <Link to="/signin" className="text-green-400 font-bold hover:underline">Sign In</Link>
         </p>
         </motion.div>
     </div>
