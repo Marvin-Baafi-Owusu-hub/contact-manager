@@ -94,12 +94,12 @@ const GlitchLoader = () => (
 
 //Dashboard 
 const Dashboard = () => {
-    const [contacts, setContacts]         = useState([]);
-    const [loading, setLoading]           = useState(true);
-    const [filtered, setFiltered]         = useState([]);
-    const [showForm, setShowForm]         = useState(false);
+    const [contacts, setContacts] = useState([]);
+    const [loading, setLoading]  = useState(true);
+    const [filtered, setFiltered] = useState([]);
+    const [showForm, setShowForm] = useState(false);
     const [currentContact, setCurrentContact] = useState(null);
-    const [pageReady, setPageReady]       = useState(false);
+    const [pageReady, setPageReady] = useState(false);
 
     const getAuthConfig = () => {
         const token = localStorage.getItem('token');
