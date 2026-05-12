@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle, XCircle, AlertTriangle, Info, X, Trash2 } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, Info, X, Trash2, UserCheck, UserCog } from 'lucide-react';
 
 // useToast hook 
 export const useToast = () => {
@@ -90,10 +90,68 @@ export const ConfirmModal = ({ message, onConfirm, onCancel }) => (
                 </button>
                 <button
                     onClick={onConfirm}
-                    className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold text-sm transition-all shadow-lg shadow-red-100">
+                    className="flex-1 py-3 rounded-xl bg-red-400 hover:bg-red-500 text-white font-semibold text-sm transition-all shadow-lg shadow-red-100">
                     Delete
                 </button>
             </div>
         </motion.div>
     </motion.div>
 );
+
+//Success Modal(create & edit)
+export const SuccessModal = ({type = 'created', contactName = '', onClose }) =>{
+    const isEdit = type === 'updated';
+
+    return(
+        <motion.div 
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-9998 flex items-center justify-center p-4">
+            <motion.div
+            initial={{scale: 0.85, y: 30}}
+            animate={{scale: 1, y: 0}}
+            exit={{scale: 0.85, y: 30}}
+            transition={{typ: 'spring', damping: 22, stiffness: 280}}
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+                {/**green top accent */}
+                <div className={`h-2 w-full ${isEdit ? 'bg-indigo-300':'bg-green-300'}`}/>
+                <div className="px-6 pt-6 pb-4 flex flex-col items-center text-center">
+                    {/*Animated checkmark circle*/}
+                    <motion.div
+                    initial={{scale: 0}}
+                    animate={{scale: 1}}
+                    transition={{type: 'spring', damping: 15, stiffness: 300, delay: 0.1}}
+                    className={`w-16 h-16 rounded-full fle items-center justify-center mb-4 ${isEdit ? 'bg-indigo-100':'bg-green-100'}`}>
+                        {isEdit
+                        ? <UserCog size={28} className="text-indigo-400"/>
+                        : <UserCheck size={28} className="text-green-400"/>
+                        }
+                    </motion.div>
+                    <h3 className="text-xl font-black text-gray-900 mb-1">
+                        {isEdit ? 'Contact Updated':'Contact Created!'}
+                    </h3>
+                    {contactName && (
+                        <p className="text-sm text-gray-500 mt-1">
+                            <span className="font-semibold text-gray-800">{contactName}</span>
+                            {isEdit
+                            ? 'Has been updated successfully.':'has been added to your contacts.'
+                            }
+                        </p>
+                    )}
+                </div>
+                <div className="px-6 pb-6">
+                    <button 
+                    onClick={onClose}
+                    className={`w-full py-3 rounded-xl text-white font-bold text-sm transition-all shadow-lg 
+                        ${isEdit
+                        ? 'bg-indigo-400 hover:bg-indigo-900 shadow-indigo-100'
+                        : 'bg-green-300 hover:bg-green-600 shadow-green-100' 
+                        }`}>
+                            Done
+                        </button>
+                </div>
+            </motion.div>
+        </motion.div>
+    );
+};

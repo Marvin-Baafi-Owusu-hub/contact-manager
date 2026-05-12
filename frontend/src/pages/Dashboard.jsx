@@ -6,7 +6,7 @@ import ContactCard from '../components/ContactCard';
 import ContactForm from '../components/ContactForm';
 import SearchBar from '../components/SearchBar';
 import SkeletonCard from '../components/SkeletonCard';
-import {Toast, ConfirmModal, useToast} from '../components/Toast';
+import {Toast, ConfirmModal, SuccessModal, useToast} from '../components/Toast';
 
 const API = 'https://contact-manager-backend-x2tn.onrender.com';
 
@@ -102,6 +102,7 @@ const Dashboard = () => {
     const [currentContact, setCurrentContact] = useState(null);
     const [pageReady, setPageReady] = useState(false);
     const [confirmId, setConfirmId] = useState(null);
+    const [successInfo, setSuccessInfo] = useState(null);
 
     const {toasts, showToast, removeToast} = useToast();
 
@@ -124,9 +125,7 @@ const Dashboard = () => {
             setPageReady(true);
         }
     };
-
     useEffect(() => { fetchContacts(); }, []);
-
     const handleSearch = (query) => {
         setFiltered(
             contacts.filter(c =>
@@ -135,7 +134,6 @@ const Dashboard = () => {
             )
         );
     };
-
     const handleDelete = (id) => setConfirmId(id);
     const confirmDelete = async () => {
         try{
@@ -148,37 +146,37 @@ const Dashboard = () => {
             showToast('Failed to delete contact', 'error');
         }
     };
-
     const handleSaveContact = async (formData) => {
         try {
             const config = getAuthConfig();
-            if (currentContact?._id) {
+            const isEdit = !!currentContact?._id;
+            if(isEdit){
                 await axios.put(`${API}/api/contacts/${currentContact._id}`, formData, config);
-            } else {
+            }else{
                 await axios.post(`${API}/api/contacts`, formData, config);
             }
             setShowForm(false);
             setCurrentContact(null);
             fetchContacts();
-            alert('Contact Saved Successfully');
-        } catch (err) {
-            alert(err.response?.data?.message || 'An unexpected error occurred');
+            //show success modal with contact name and action type
+            setSuccessInfo({
+                type: isEdit ? 'updated' : 'created',
+                name: formData.name
+            });
+        } catch(err) {
+            showToast(err.response?.data?.message || 'An unexpected error occurred', 'error');
             console.error('Save failed:', err);
         }
     };
-
     // Show glitch loader until first fetch completes
     if (!pageReady) return <GlitchLoader />;
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
             className="max-w-4xl mx-auto">
-
             <Toast toasts={toasts} removeToast={removeToast} />
-
             <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 flex items-center gap-2">
@@ -194,9 +192,7 @@ const Dashboard = () => {
                     <Plus size={18} /> Add Contact
                 </motion.button>
             </header>
-
             <SearchBar onSearch={handleSearch} />
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-4">
                 {loading ? (
                     [1, 2, 3].map(n => <SkeletonCard key={n} />)
@@ -219,7 +215,6 @@ const Dashboard = () => {
                     </AnimatePresence>
                 )}
             </div>
-
             {/*ContactForm rendered at root level with high z-index so it's never hidden */}
             <AnimatePresence>
                 {showForm && (
@@ -229,7 +224,6 @@ const Dashboard = () => {
                         onClose={() => { setShowForm(false); setCurrentContact(null); }} />
                 )}
             </AnimatePresence>
-
             {/**custom delete confirm modal */}
             <AnimatePresence>
                 {confirmId && (
@@ -237,6 +231,15 @@ const Dashboard = () => {
                     message="Are you sure you want to delete contact? This cannot be undone."
                     onConfirm={confirmDelete}
                     onCancel={() => setConfirmId(null)} />
+                )}
+            </AnimatePresence>
+            {/**success modal; create or edit */}
+            <AnimatePresence>
+                {successful && (
+                    <SuccessModal
+                    type={successInfo.type}
+                    contactName={successInfo.name}
+                    onClose={() => setSuccessInfo(null)} />
                 )}
             </AnimatePresence>
         </motion.div>
