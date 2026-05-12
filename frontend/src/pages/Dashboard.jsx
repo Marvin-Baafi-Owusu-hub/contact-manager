@@ -235,7 +235,7 @@ const Dashboard = () => {
             </AnimatePresence>
             {/**success modal; create or edit */}
             <AnimatePresence>
-                {successful && (
+                {successInfo && (
                     <SuccessModal
                     type={successInfo.type}
                     contactName={successInfo.name}

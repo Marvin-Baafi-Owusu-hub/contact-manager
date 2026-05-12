@@ -112,7 +112,7 @@ export const SuccessModal = ({type = 'created', contactName = '', onClose }) =>{
             initial={{scale: 0.85, y: 30}}
             animate={{scale: 1, y: 0}}
             exit={{scale: 0.85, y: 30}}
-            transition={{typ: 'spring', damping: 22, stiffness: 280}}
+            transition={{type: 'spring', damping: 22, stiffness: 280}}
             className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
                 {/**green top accent */}
                 <div className={`h-2 w-full ${isEdit ? 'bg-indigo-300':'bg-green-300'}`}/>
@@ -122,7 +122,7 @@ export const SuccessModal = ({type = 'created', contactName = '', onClose }) =>{
                     initial={{scale: 0}}
                     animate={{scale: 1}}
                     transition={{type: 'spring', damping: 15, stiffness: 300, delay: 0.1}}
-                    className={`w-16 h-16 rounded-full fle items-center justify-center mb-4 ${isEdit ? 'bg-indigo-100':'bg-green-100'}`}>
+                    className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${isEdit ? 'bg-indigo-100':'bg-green-100'}`}>
                         {isEdit
                         ? <UserCog size={28} className="text-indigo-400"/>
                         : <UserCheck size={28} className="text-green-400"/>
@@ -132,11 +132,13 @@ export const SuccessModal = ({type = 'created', contactName = '', onClose }) =>{
                         {isEdit ? 'Contact Updated':'Contact Created!'}
                     </h3>
                     {contactName && (
-                        <p className="text-sm text-gray-500 mt-1">
-                            <span className="font-semibold text-gray-800">{contactName}</span>
+                        <p className="text-sm text-gray-500 mt-1 ">
+                            <span className="font-semibold text-gray-800 ">{contactName}</span>
+                            <span className="ml-1">
                             {isEdit
                             ? 'Has been updated successfully.':'has been added to your contacts.'
                             }
+                            </span>
                         </p>
                     )}
                 </div>
