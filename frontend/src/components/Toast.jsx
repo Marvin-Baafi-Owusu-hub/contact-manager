@@ -138,7 +138,7 @@ export const SuccessModal = ({type = 'created', contactName = '', onClose }) =>{
                             {isEdit
                             ? 'Has been updated successfully.':'has been added to your contacts.'
                             }
-                            </span>
+                            </span>   
                         </p>
                     )}
                 </div>
